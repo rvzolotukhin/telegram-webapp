@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор жанра</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Выберите жанр:</h1>
+    <div id="genre-buttons">
+        <button onclick="selectGenre('Триллер')">Триллер</button>
+        <button onclick="selectGenre('Драма')">Драма</button>
+        <button onclick="selectGenre('Комедия')">Комедия</button>
+        <button onclick="selectGenre('Фантастика')">Фантастика</button>
+    </div>
+
+    <script>
+        function selectGenre(genre) {
+            // Отправляем выбранный жанр обратно в бот
+            window.Telegram.WebApp.sendData(genre);
+            window.Telegram.WebApp.close();
+        }
+    </script>
+</body>
+</html>
