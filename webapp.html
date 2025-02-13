@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кинодневник 🎬</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .genre-button {
+            background-color: #007bff;
+            color: white;
+        }
+        .rating-button {
+            background-color: #28a745;
+            color: white;
+        }
+        .comment-button {
+            background-color: #ffc107;
+            color: black;
+        }
+        .submit-button {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 Кинодневник</h1>
+
+    <div id="step-1">
+        <h2>Выберите жанр 🎭:</h2>
+        <div class="button-container">
+            <button class="genre-button" onclick="selectGenre('Триллер')">Триллер 🕵️‍♂️</button>
+            <button class="genre-button" onclick="selectGenre('Драма')">Драма 🎭</button>
+            <button class="genre-button" onclick="selectGenre('Комедия')">Комедия 😄</button>
+            <button class="genre-button" onclick="selectGenre('Фантастика')">Фантастика 🚀</button>
+        </div>
+    </div>
+
+    <div id="step-2" style="display: none;">
+        <h2>Укажите название фильма 📝:</h2>
+        <input type="text" id="film-title" placeholder="Название фильма..." style="padding: 10px; font-size: 16px; width: 80%; margin-bottom: 20px;">
+        <button class="submit-button" onclick="nextStep()">Продолжить ➡️</button>
+    </div>
+
+    <div id="step-3" style="display: none;">
+        <h2>Оцените фильм ⭐:</h2>
+        <div class="button-container">
+            <button class="rating-button" onclick="selectRating(1)">⭐️ 1</button>
+            <button class="rating-button" onclick="selectRating(2)">⭐️ 2</button>
+            <button class="rating-button" onclick="selectRating(3)">⭐️ 3</button>
+            <button class="rating-button" onclick="selectRating(4)">⭐️ 4</button>
+            <button class="rating-button" onclick="selectRating(5)">⭐️ 5</button>
+            <button class="rating-button" onclick="selectRating(6)">⭐️ 6</button>
+            <button class="rating-button" onclick="selectRating(7)">⭐️ 7</button>
+            <button class="rating-button" onclick="selectRating(8)">⭐️ 8</button>
+            <button class="rating-button" onclick="selectRating(9)">⭐️ 9</button>
+            <button class="rating-button" onclick="selectRating(10)">⭐️ 10</button>
+        </div>
+    </div>
+
+    <div id="step-4" style="display: none;">
+        <h2>Добавьте комментарий ✏️:</h2>
+        <textarea id="film-comment" placeholder="Ваш комментарий..." style="padding: 10px; font-size: 16px; width: 80%; height: 100px; margin-bottom: 20px;"></textarea>
+        <button class="comment-button" onclick="submitData()">Отправить 📤</button>
+    </div>
+
+    <script>
+        let selectedGenre = '';
+        let filmTitle = '';
+        let filmRating = '';
+
+        // Выбор жанра
+        function selectGenre(genre) {
+            selectedGenre = genre;
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'block';
+        }
+
+        // Переход к следующему шагу
+        function nextStep() {
+            filmTitle = document.getElementById('film-title').value.trim();
+            if (!filmTitle) {
+                alert("❌ Пожалуйста, укажите название фильма.");
+                return;
+            }
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('step-3').style.display = 'block';
+        }
+
+        // Выбор оценки
+        function selectRating(rating) {
+            filmRating = rating;
+            document.getElementById('step-3').style.display = 'none';
+            document.getElementById('step-4').style.display = 'block';
+        }
+
+        // Отправка данных обратно в бот
+        function submitData() {
+            const comment = document.getElementById('film-comment').value.trim();
+            const data = JSON.stringify({
+                genre: selectedGenre,
+                title: filmTitle,
+                rating: filmRating,
+                comment: comment || "Без комментария"
+            });
+
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(data);
+                window.Telegram.WebApp.close();
+            } else {
+                alert("Ошибка: Telegram WebApp API недоступен.");
+            }
+        }
+
+        // Инициализация WebApp
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.expand();
+                window.Telegram.WebApp.MainButton.text = "Закрыть";
+                window.Telegram.WebApp.MainButton.show();
+                window.Telegram.WebApp.MainButton.onClick(() => {
+                    window.Telegram.WebApp.close();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
